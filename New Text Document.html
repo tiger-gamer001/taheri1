@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مجموعه مفاهیم پایه PHP - Liquid Glass</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Vazirmatn for Persian text -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ---------------------------------
+            1. CORE ANIMATIONS
+            --------------------------------- */
+
+        /* BLOB ANIMATION KEYFRAMES: More complex, fluid movement */
+        @keyframes moveBlob {
+            0% { transform: translate(0, 0) scale(1.0); }
+            25% { transform: translate(-40vw, 20vh) scale(1.1) rotate(10deg); }
+            50% { transform: translate(40vw, -40vh) scale(0.9) rotate(-15deg); }
+            75% { transform: translate(-20vw, 50vh) scale(1.2) rotate(5deg); }
+            100% { transform: translate(0, 0) scale(1.0); }
+        }
+
+        /* SHEEN/SHINE EFFECT KEYFRAMES: Gentle, light-refracting move */
+        @keyframes sheen {
+            0% { transform: translate(-150%, -150%) rotate(45deg); }
+            100% { transform: translate(150%, 150%) rotate(45deg); }
+        }
+
+        /* CONTENT ENTRANCE ANIMATION: Smooth fade-in and slide-up */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ---------------------------------
+            2. GENERAL STYLING
+            --------------------------------- */
+        
+        :root {
+            --primary-indigo: #4f46e5;
+            --primary-emerald: #10b981;
+            --primary-purple: #9333ea;
+            --primary-pink: #ec4899;
+        }
+
+        body {
+            /* Deeper gradient background for better contrast with light glass */
+            background: linear-gradient(135deg, #1f2937, #374151); 
+            font-family: 'Vazirmatn', sans-serif;
+            color: #d1d5db; /* Light gray text for dark background */
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Apply entrance animation to the main container */
+        .main-content-entrance {
+            animation: fadeInUp 1s ease-out both;
+            animation-delay: 0.2s;
+        }
+
+        /* ---------------------------------
+            3. FLOATING BLOBS
+            --------------------------------- */
+
+        #blob-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1; 
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(200px); /* Heavy blur for liquid effect */
+            opacity: 0.7;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        #blob1 {
+            width: 500px; height: 500px; background: #6366f1; /* Indigo */
+            top: 5%; left: 10%; animation: moveBlob 24s infinite;
+        }
+        #blob2 {
+            width: 600px; height: 600px; background: #10b981; /* Emerald */
+            bottom: 15%; right: 5%; animation: moveBlob 28s infinite; animation-delay: -6s;
+        }
+        #blob3 {
+            width: 450px; height: 450px; background: #f87171; /* Red/Pink for contrast */
+            top: 40%; left: 30%; animation: moveBlob 20s infinite; animation-delay: -12s;
+        }
+        #blob4 {
+            width: 350px; height: 350px; background: #3b82f6; /* Blue */
+            bottom: 5%; left: 5%; animation: moveBlob 32s infinite; animation-delay: -18s;
+        }
+
+        /* ---------------------------------
+            4. LIQUID GLASS CARD STYLING & HOVER EFFECT
+            --------------------------------- */
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1); /* Very subtle transparent white */
+            backdrop-filter: blur(24px); /* Increased blur */
+            -webkit-backdrop-filter: blur(24px); 
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Lighter border */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.05); /* Deep shadow, inner highlight */
+            border-radius: 1.5rem; /* More rounded */
+            position: relative;
+            overflow: hidden; 
+            transform-style: preserve-3d;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth transition for 3D and shadow */
+        }
+        
+        /* 3D HOVER EFFECT */
+        .glass-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            transform: perspective(1000px) rotateX(1deg) rotateY(-1deg) scale(1.02);
+        }
+
+        /* Sheen Effect on Glass Cards */
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300%;
+            height: 300%;
+            background: linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.25) 50%, /* Stronger, thinner highlight */
+                rgba(255, 255, 255, 0) 100%
+            );
+            opacity: 0.3;
+            animation: sheen 18s infinite linear; /* Slower, continuous shine */
+            pointer-events: none;
+        }
+
+        /* ---------------------------------
+            5. ACCORDION & CODE STYLING
+            --------------------------------- */
+        
+        .accordion-header {
+            transition: all 0.3s ease-in-out;
+            border-radius: 0.75rem;
+            transform: translateZ(20px); /* For 3D context within card */
+        }
+
+        .accordion-header:hover {
+            background-color: rgba(255, 255, 255, 0.05); /* Subtle light hover */
+        }
+
+        .accordion-content {
+            max-height: 0;
+            opacity: 0;
+            padding-right: 1.5rem; /* Initial right padding */
+            transition: max-height 0.6s ease-in-out, opacity 0.5s ease-in-out, padding-right 0.6s ease-in-out;
+        }
+
+        .accordion-content.active {
+            max-height: 2500px;
+            opacity: 1;
+            padding-right: 0.5rem; /* Reduced right padding on active */
+            padding-bottom: 1rem;
+        }
+
+        /* ACCORDION COLOR BORDER (UX enhancement) */
+        .accordion-wrapper {
+            border-right: 4px solid transparent;
+            transition: border-right 0.3s ease-in-out;
+        }
+
+        .accordion-wrapper.active {
+            border-right-width: 8px; /* Thicker border when active */
+        }
+        
+        /* Pre-include Tailwind classes for dynamic use (to prevent JIT purging) */
+        .accordion-wrapper.active.border-indigo-400 { border-color: #818cf8; } 
+        .accordion-wrapper.active.border-emerald-400 { border-color: #34d399; }
+        .accordion-wrapper.active.border-purple-400 { border-color: #c084fc; }
+        .accordion-wrapper.active.border-pink-400 { border-color: #f472b6; }
+
+
+        /* CODE BLOCK STYLING */
+        .code-block {
+            background-color: #0f172a; /* Slate-900 */
+            color: #a5f3fc; /* Cyan-200 */
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-family: monospace;
+            direction: ltr;
+            text-align: left;
+            box-shadow: inset 0 0 10px rgba(0, 200, 255, 0.1); /* Inner glow */
+        }
+        
+        .result-block {
+            background-color: #0f172a; 
+            border: 1px solid #334155;
+            color: #fca5a5; /* Red-300 for results */
+            font-family: monospace;
+            direction: ltr; 
+            border-radius: 0.5rem;
+        }
+
+        .copy-button {
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        .copy-button:active {
+            transform: scale(0.95);
+        }
+    </style>
+    <script>
+        // Global state for showing messages
+        let messageTimeout;
+
+        // Utility function to copy code to clipboard
+        function copyCode(button, codeId) {
+            const codeElement = document.getElementById(codeId);
+            const codeText = codeElement.innerText;
+            
+            // Use execCommand for better compatibility in iFrames
+            const tempInput = document.createElement('textarea');
+            tempInput.value = codeText;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            try {
+                document.execCommand('copy');
+                showMessage(button, '✅ کپی شد!', 'bg-green-600 shadow-lg');
+            } catch (err) {
+                console.error('Copy failed:', err);
+                showMessage(button, '❌ خطا در کپی!', 'bg-red-600 shadow-lg');
+            } finally {
+                document.body.removeChild(tempInput);
+            }
+        }
+
+        // Utility function to show confirmation message on the button
+        function showMessage(button, msg, className) {
+            const originalText = button.dataset.originalText || button.innerText;
+            const originalClasses = button.dataset.originalClasses || button.className;
+
+            clearTimeout(messageTimeout);
+
+            if (!button.dataset.originalText) {
+                button.dataset.originalText = originalText;
+                button.dataset.originalClasses = originalClasses;
+            }
+
+            button.innerText = msg;
+            button.className = `${className} text-white font-bold py-2 px-4 rounded-lg transition duration-150 ease-in-out absolute top-3 left-3 text-xs z-50`;
+
+            messageTimeout = setTimeout(() => {
+                button.innerText = originalText;
+                // Restore classes by removing only the temporary ones
+                button.className = originalClasses.replace(/bg-\w+-\d+ shadow-lg/, ''); 
+                // Restore original Tailwind classes
+                button.classList.add('bg-gray-700', 'text-xs', 'text-white', 'p-2', 'rounded-lg', 'hover:bg-gray-600', 'transition');
+
+                delete button.dataset.originalText;
+                delete button.dataset.originalClasses;
+            }, 1500);
+        }
+
+        // Accordion functionality
+        function toggleAccordion(header) {
+            const wrapper = header.closest('.accordion-wrapper');
+            const content = header.nextElementSibling;
+            const icon = header.querySelector('svg');
+            const section = header.closest('section'); 
+            
+            // Get the intended color for the border from the data attribute on the wrapper
+            const colorClass = wrapper.dataset.color;
+
+            // Close all other open wrappers in the same section (Exclusive Accordion)
+            section.querySelectorAll('.accordion-wrapper').forEach(w => {
+                const c = w.querySelector('.accordion-content');
+                // Check if the current wrapper is NOT the one being clicked AND it is active
+                if (w !== wrapper && w.classList.contains('active')) {
+                    c.classList.remove('active');
+                    w.classList.remove('active');
+                    // Get the color used by the currently active wrapper to remove its border class
+                    const activeColor = w.dataset.color;
+                    w.classList.remove(`border-${activeColor}`); 
+                    w.querySelector('svg').classList.remove('rotate-180');
+                }
+            });
+
+            // Toggle current accordion
+            content.classList.toggle('active');
+            icon.classList.toggle('rotate-180');
+            wrapper.classList.toggle('active');
+            
+            // Toggle the active border color based on the current active state
+            if (wrapper.classList.contains('active')) {
+                // Add the specific border color class
+                wrapper.classList.add(`border-${colorClass}`);
+            } else {
+                // Remove the specific border color class
+                wrapper.classList.remove(`border-${colorClass}`);
+            }
+        }
+
+        // Initializer
+        document.addEventListener('DOMContentLoaded', () => {
+            // Attach event listeners to all accordion headers
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                // We rely solely on the JS event listener. The inline onclick attributes must be removed from HTML.
+                header.addEventListener('click', () => toggleAccordion(header));
+            });
+        });
+    </script>
+</head>
+<body class="p-4 sm:p-8">
+
+    <!-- Floating Blobs Container -->
+    <div id="blob-container">
+        <div id="blob1" class="blob"></div>
+        <div id="blob2" class="blob"></div>
+        <div id="blob3" class="blob"></div>
+        <div id="blob4" class="blob"></div>
+    </div>
+
+    <div class="max-w-4xl mx-auto relative main-content-entrance">
+        <header class="glass-card text-center mb-12 py-10 px-6 transform-gpu">
+            <h1 class="text-5xl font-extrabold text-white mb-3 tracking-wider">💎 Liquid Glass PHP Concepts</h1>
+            <p class="text-xl text-gray-300 font-light">مجموعه‌ای از مفاهیم پایه‌ی PHP با طراحی شیشه‌ای مدرن و تعاملی.</p>
+        </header>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-indigo-400 border-b-4 border-indigo-500 pb-3 mb-8">مفاهیم پایه: جابجایی و عملگرها</h2>
+            
+            <!-- 1. جابجایی مقادیر (روش سنتی) -->
+            <div class="accordion-wrapper glass-card p-4 mb-6 transition-all duration-500 rounded-2xl" data-color="indigo-400">
+                <!-- REMOVED onclick="toggleAccordion(this)" -->
+                <div class="accordion-header flex justify-between items-center cursor-pointer p-4 transition-all duration-300">
+                    <h3 class="text-xl font-semibold text-indigo-300">۱. جابجایی مقادیر متغیرها (روش سنتی)</h3>
+                    <svg class="w-7 h-7 text-indigo-400 transition-transform duration-300 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div class="accordion-content pt-4">
+                    <div class="border-t border-gray-700 pt-4">
+                        <p class="text-gray-400 mb-4">نحوه جابجایی مقادیر (اعداد و رشته‌ها) با استفاده از یک متغیر کمکی موقت ($khali) که ساده‌ترین و رایج‌ترین راه است.</p>
+                        
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-indigo-400">خروجی برنامه</h4>
+                        <pre class="result-block p-4 rounded-xl text-sm mb-4">
+مقدار متغیر a1=10 
+مقدار متغیر a2=a
+مقدار متغیر a3=20
+مقدار متغیر a4=b
+...
+مقدار متغیر بعد از جابجاییa1=20 
+مقدار متغیر بعد از جابجاییa2=b
+مقدار متغیر بعد از جابجاییa3=10
+مقدار متغیر بعد از جابجاییa4=a
+                        </pre>
+
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-indigo-400">کد PHP</h4>
+                        <div class="relative">
+                            <button onclick="copyCode(this, 'code1')" data-original-text="کپی کد" class="copy-button absolute top-3 left-3 bg-gray-700 text-xs text-white p-2 rounded-lg hover:bg-gray-600 transition">کپی کد</button>
+                            <pre id="code1" class="code-block text-sm">
+&lt;?php
+$a1 = 10;
+$a2 = "a";
+$a3 = 20;
+$a4 = "b";
+
+echo "مقدار متغیر a1=$a1 \n";
+echo "مقدار متغیر a2=$a2\n";
+echo "مقدار متغیر a3=$a3\n";
+echo "مقدار متغیر a4=$a4\n\n\n";
+
+// جابجایی با متغیر کمکی
+$khali = $a1;
+$a1 = $a3;
+$a3 = $khali;
+$khali = $a2;
+$a2 = $a4;
+$a4 = $khali;
+
+echo "مقدار متغیر بعد از جابجاییa1=$a1 \n";
+echo "مقدار متغیر بعد از جابجاییa2=$a2\n";
+echo "مقدار متغیر بعد از جابجاییa3=$a3\n";
+echo "مقدار متغیر بعد از جابجاییa4=$a4";
+?&gt;
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. جابجایی مقادیر (روش ریاضی) -->
+            <div class="accordion-wrapper glass-card p-4 mb-6 transition-all duration-500 rounded-2xl" data-color="indigo-400">
+                <!-- REMOVED onclick="toggleAccordion(this)" -->
+                <div class="accordion-header flex justify-between items-center cursor-pointer p-4 transition-all duration-300">
+                    <h3 class="text-xl font-semibold text-indigo-300">۲. جابجایی مقادیر متغیرها (روش ریاضی)</h3>
+                    <svg class="w-7 h-7 text-indigo-400 transition-transform duration-300 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div class="accordion-content pt-4">
+                    <div class="border-t border-gray-700 pt-4">
+                        <p class="text-gray-400 mb-4">جابجایی متغیرهای عددی بدون متغیر کمکی، تنها با استفاده از عملیات جمع و تفریق. روشی بهینه اما فقط برای اعداد.</p>
+                        
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-indigo-400">خروجی برنامه</h4>
+                        <pre class="result-block p-4 rounded-xl text-sm mb-4">
+مقادیر اولیه: a1=10, a3=20, a2=30, a4=40 
+
+مقادیر بعد از جابجایی: a1=20, a3=10, a2=40, a4=30 
+                        </pre>
+                        
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-indigo-400">کد PHP</h4>
+                        <div class="relative">
+                            <button onclick="copyCode(this, 'code2')" data-original-text="کپی کد" class="copy-button absolute top-3 left-3 bg-gray-700 text-xs text-white p-2 rounded-lg hover:bg-gray-600 transition">کپی کد</button>
+                            <pre id="code2" class="code-block text-sm">
+&lt;?php
+$a1 = 10;
+$a2 = 30;
+$a3 = 20;
+$a4 = 40;
+
+echo "مقادیر اولیه: a1=$a1, a3=$a3, a2=$a2, a4=$a4 \n\n";
+
+// جابجایی a1 و a3
+$a1 = $a1 + $a3;
+$a3 = $a1 - $a3;
+$a1 = $a1 - $a3;
+
+// جابجایی a2 و a4
+$a2 = $a2 + $a4;
+$a4 = $a2 - $a4;
+$a2 = $a2 - $a4;
+
+echo "مقادیر بعد از جابجایی: a1=$a1, a3=$a3, a2=$a2, a4=$a4 ";
+?&gt;
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 3. اولویت عملگرها و افزایش/کاهش -->
+            <div class="accordion-wrapper glass-card p-4 mb-6 transition-all duration-500 rounded-2xl" data-color="indigo-400">
+                <!-- REMOVED onclick="toggleAccordion(this)" -->
+                <div class="accordion-header flex justify-between items-center cursor-pointer p-4 transition-all duration-300">
+                    <h3 class="text-xl font-semibold text-indigo-300">۳. اولویت عملگرها و افزایش/کاهش (Increment/Decrement)</h3>
+                    <svg class="w-7 h-7 text-indigo-400 transition-transform duration-300 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div class="accordion-content pt-4">
+                    <div class="border-t border-gray-700 pt-4">
+                        <p class="text-gray-400 mb-4">نحوه عملکرد و اولویت عملگرهای افزایشی پیشوندی (++$y) و پسوندی ($x++) در یک عبارت ریاضی.</p>
+                        
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-indigo-400">خروجی برنامه</h4>
+                        <pre class="result-block p-4 rounded-xl text-sm mb-4">
+-12
+                        </pre>
+
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-indigo-400">کد PHP</h4>
+                        <div class="relative">
+                            <button onclick="copyCode(this, 'code3')" data-original-text="کپی کد" class="copy-button absolute top-3 left-3 bg-gray-700 text-xs text-white p-2 rounded-lg hover:bg-gray-600 transition">کپی کد</button>
+                            <pre id="code3" class="code-block text-sm">
+&lt;?php
+$x = 6;
+$y = 8;
+// (++$y) before use (9)
+// ($x++) after use (6, then becomes 7)
+// Result: (9 * 6) - (9 * 7 + 3) = 54 - (63 + 3) = 54 - 66 = -12
+$r = (++$y * $x++) - ($y * $x + 3);
+echo $r; 
+?&gt;
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!-- 4. تفاوت echo و print_r -->
+            <div class="accordion-wrapper glass-card p-4 mb-6 transition-all duration-500 rounded-2xl" data-color="indigo-400">
+                <div class="accordion-header flex justify-between items-center cursor-pointer p-4 transition-all duration-300">
+                    <h3 class="text-xl font-semibold text-indigo-300">۴. تفاوت echo و print_r در نمایش آرایه‌ها</h3>
+                    <svg class="w-7 h-7 text-indigo-400 transition-transform duration-300 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div class="accordion-content pt-4">
+                    <div class="border-t border-gray-700 pt-4">
+                        <p class="text-gray-400 mb-4">تابع <code>echo</code> برای نمایش متغیرهای ساده است، اما برای نمایش آرایه‌ها و آبجکت‌ها از <code>print_r</code> استفاده می‌شود.</p>
+                        
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-indigo-400">خروجی برنامه</h4>
+                        <pre class="result-block p-4 rounded-xl text-sm mb-4">
+Echoing array: Array
+print_r output: Array
+(
+    [0] => PHP
+    [1] => JS
+    [2] => HTML
+)
+                        </pre>
+
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-indigo-400">کد PHP</h4>
+                        <div class="relative">
+                            <button onclick="copyCode(this, 'code4')" data-original-text="کپی کد" class="copy-button absolute top-3 left-3 bg-gray-700 text-xs text-white p-2 rounded-lg hover:bg-gray-600 transition">کپی کد</button>
+                            <pre id="code4" class="code-block text-sm">
+&lt;?php
+$languages = ["PHP", "JS", "HTML"];
+
+echo "Echoing array: " . $languages . "\n"; 
+echo "print_r output: ";
+print_r($languages);
+?&gt;
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-emerald-400 border-b-4 border-emerald-500 pb-3 mb-8">ساختارهای شرطی و حل سئوالات امتحانی</h2>
+            
+            <!-- 5. سئوال و جواب (مدیریت تاریخ و روزهای ماه) -->
+            <div class="accordion-wrapper glass-card p-4 mb-6 transition-all duration-500 rounded-2xl" data-color="emerald-400">
+                <!-- REMOVED onclick="toggleAccordion(this)" -->
+                <div class="accordion-header flex justify-between items-center cursor-pointer p-4 transition-all duration-300">
+                    <h3 class="text-xl font-semibold text-emerald-300">۵. مدیریت تاریخ و روزهای ماه (منطق شرطی پیچیده)</h3>
+                    <svg class="w-7 h-7 text-emerald-400 transition-transform duration-300 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div class="accordion-content pt-4">
+                    <div class="border-t border-gray-700 pt-4">
+                        <p class="text-gray-400 mb-4">حل سئوال امتحانی با استفاده از ساختار شرطی <code>if/else</code> برای تعیین تعداد روزهای ماه، شامل مدیریت مقادیر ورودی خارج از محدوده (با استفاده از عملگر باقی‌مانده).</p>
+                        
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-emerald-400">خروجی برنامه (برای $mon = 13$):</h4>
+                        <pre class="result-block p-4 rounded-xl text-sm mb-4">
+ماه پس از تعدیل: 1
+31
+                        </pre>
+
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-emerald-400">کد PHP</h4>
+                        <div class="relative">
+                            <button onclick="copyCode(this, 'code5')" data-original-text="کپی کد" class="copy-button absolute top-3 left-3 bg-gray-700 text-xs text-white p-2 rounded-lg hover:bg-gray-600 transition">کپی کد</button>
+                            <pre id="code5" class="code-block text-sm">
+&lt;?php
+$mon = 13; // 13 will be adjusted to 1
+
+if ($mon &lt;= 12 && $mon &gt;= 1) {
+    if ($mon == 12) {
+        echo 29; // Special condition for month 12 (29 days)
+    } elseif ($mon &lt;= 6) {
+        echo 31;
+    } else {
+        echo 30;
+    }
+} else {
+    // If month is > 12, use modulo to adjust
+    $mon = $mon % 12;
+    // Handle $mon = 0 case, which results from 12 % 12
+    if ($mon == 0) $mon = 12; 
+    
+    echo "ماه پس از تعدیل: $mon\n";
+    
+    // Re-evaluate adjusted month
+    if ($mon == 12) {
+        echo 29;
+    } elseif ($mon &lt;= 6) {
+        echo 31;
+    } else {
+        echo 30;
+    }
+}
+?&gt;
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-purple-400 border-b-4 border-purple-500 pb-3 mb-8">حلقه‌های تکرار (For Loop) و کنترل جریان</h2>
+
+            <!-- 6. حلقه‌های تکرار (ایجاد جدول ضرب) -->
+            <div class="accordion-wrapper glass-card p-4 mb-6 transition-all duration-500 rounded-2xl" data-color="purple-400">
+                <!-- REMOVED onclick="toggleAccordion(this)" -->
+                <div class="accordion-header flex justify-between items-center cursor-pointer p-4 transition-all duration-300">
+                    <h3 class="text-xl font-semibold text-purple-300">۶. حلقه‌های تکرار (ایجاد جدول ضرب در HTML)</h3>
+                    <svg class="w-7 h-7 text-purple-400 transition-transform duration-300 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div class="accordion-content pt-4">
+                    <div class="border-t border-gray-700 pt-4">
+                        <p class="text-gray-400 mb-4">استفاده از حلقه‌های <code>for</code> تو در تو برای تولید محتوای داینامیک HTML (جدول ضرب ۱ تا ۱۰).</p>
+                        
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-purple-400">خروجی برنامه</h4>
+                        <pre class="result-block p-4 rounded-xl text-sm mb-4">
+(خروجی یک جدول HTML استاندارد)
+| 1 | 2 | ... | 10 |
+| 2 | 4 | ... | 20 |
+| ... | ... | ... | ... |
+| 10 | 20 | ... | 100 |
+                        </pre>
+
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-purple-400">کد PHP</h4>
+                        <div class="relative">
+                            <button onclick="copyCode(this, 'code6')" data-original-text="کپی کد" class="copy-button absolute top-3 left-3 bg-gray-700 text-xs text-white p-2 rounded-lg hover:bg-gray-600 transition">کپی کد</button>
+                            <pre id="code6" class="code-block text-sm">
+&lt;?php
+echo '&lt;table border="1" style="width: 100%; text-align: center; border-collapse: collapse; background-color: #f3f4f6; color: #1f2937;"&gt;';
+
+for ($i=1 ; $i &lt;=10; $i++)
+{
+    echo '&lt;tr&gt;';
+    for ($d=1 ; $d &lt;=10; $d++)
+    {
+        // Highlight first row/column for readability
+        $style = (($i == 1 || $d == 1) && !($i == 1 && $d == 1)) ? 'background-color: #e5e7eb; font-weight: bold;' : '';
+        echo '&lt;td style="padding: 6px;' . $style . '"&gt;' . ($d * $i) . '&lt;/td&gt;'; 
+    }
+    echo '&lt;/tr&gt;';
+}
+echo '&lt;/table&gt;';
+?&gt;
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. حلقه‌های تکرار و دستور continue (مثال ۱) -->
+            <div class="accordion-wrapper glass-card p-4 mb-6 transition-all duration-500 rounded-2xl" data-color="purple-400">
+                <!-- REMOVED onclick="toggleAccordion(this)" -->
+                <div class="accordion-header flex justify-between items-center cursor-pointer p-4 transition-all duration-300">
+                    <h3 class="text-xl font-semibold text-purple-300">۷. دستور continue: حذف دو بازه (۱ تا ۱۰ و ۳۱ تا ۳۹)</h3>
+                    <svg class="w-7 h-7 text-purple-400 transition-transform duration-300 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div class="accordion-content pt-4">
+                    <div class="border-t border-gray-700 pt-4">
+                        <p class="text-gray-400 mb-4">استفاده از <code>continue</code> برای پرش از تکرارهای فعلی حلقه در شرایط خاص (حذف اعداد در بازه‌های تعریف شده).</p>
+                        
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-purple-400">خروجی برنامه (منتخب)</h4>
+                        <pre class="result-block p-4 rounded-xl text-sm mb-4">
+number 11
+number 12
+...
+number 30
+number 40
+number 41
+...
+number 45
+                        </pre>
+
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-purple-400">کد PHP</h4>
+                        <div class="relative">
+                            <button onclick="copyCode(this, 'code7')" data-original-text="کپی کد" class="copy-button absolute top-3 left-3 bg-gray-700 text-xs text-white p-2 rounded-lg hover:bg-gray-600 transition">کپی کد</button>
+                            <pre id="code7" class="code-block text-sm">
+&lt;?php
+for ( $i=1 ; $i&lt;=45 ; $i++)
+{
+    // Skip 1 to 10
+    if ( $i&gt;0 && $i&lt;11) continue; 
+    // Skip 31 to 39
+    if ( $i&gt;30 && $i&lt;40) continue; 
+    
+    echo "number $i\n";
+}
+?&gt;
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-pink-400 border-b-4 border-pink-500 pb-3 mb-8">قابلیت کاربردی: تابع بررسی عدد اول</h2>
+            
+            <!-- 9. تابع بررسی عدد اول -->
+            <div class="accordion-wrapper glass-card p-4 mb-6 transition-all duration-500 rounded-2xl" data-color="pink-400">
+                <!-- REMOVED onclick="toggleAccordion(this)" -->
+                <div class="accordion-header flex justify-between items-center cursor-pointer p-4 transition-all duration-300">
+                    <h3 class="text-xl font-semibold text-pink-300">۹. تابع isPrime: بررسی عدد اول بودن (با بهینه‌سازی)</h3>
+                    <svg class="w-7 h-7 text-pink-400 transition-transform duration-300 accordion-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </div>
+                <div class="accordion-content pt-4">
+                    <div class="border-t border-gray-700 pt-4">
+                        <p class="text-gray-400 mb-4">یک تابع بهینه‌شده برای بررسی عدد اول بودن با استفاده از حلقه و تنها بررسی تا جذر عدد (Square Root Optimization)، که کارایی را برای اعداد بزرگ افزایش می‌دهد.</p>
+                        
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-pink-400">خروجی برنامه (برای $number = 17$ و $number = 12$)</h4>
+                        <pre class="result-block p-4 rounded-xl text-sm mb-4">
+عدد 17 اول است.
+عدد 12 اول نیست.
+                        </pre>
+
+                        <h4 class="text-lg font-bold mt-6 mb-2 text-pink-400">کد PHP</h4>
+                        <div class="relative">
+                            <button onclick="copyCode(this, 'code9')" data-original-text="کپی کد" class="copy-button absolute top-3 left-3 bg-gray-700 text-xs text-white p-2 rounded-lg hover:bg-gray-600 transition">کپی کد</button>
+                            <pre id="code9" class="code-block text-sm">
+&lt;?php
+/**
+ * Checks if a number is prime using the optimized method (checking up to sqrt(n)).
+ */
+function isPrime(int $number): bool 
+{
+    if ($number &lt; 2) {
+        return false;
+    }
+    
+    if ($number === 2) {
+        return true;
+    }
+    
+    // Check if divisible by 2
+    if ($number % 2 === 0) {
+        return false;
+    }
+
+    // Check odd divisors from 3 up to sqrt($number)
+    for ($i = 3; $i * $i &lt;= $number; $i += 2) {
+        if ($number % $i === 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+$testNumber1 = 17;
+$testNumber2 = 12;
+
+echo "عدد $testNumber1 " . (isPrime($testNumber1) ? "اول است." : "اول نیست.") . "\n";
+echo "عدد $testNumber2 " . (isPrime($testNumber2) ? "اول است." : "اول نیست.") . "\n";
+?&gt;
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center mt-12 pt-8 border-t border-gray-700 text-gray-500 text-base font-light">
+            <p>طراحی شده با الهام از زیبایی‌شناسی Liquid Glass و Tailwind CSS.</p>
+        </footer>
+
+    </div>
+</body>
+</html>
